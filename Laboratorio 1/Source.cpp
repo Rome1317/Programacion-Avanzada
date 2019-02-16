@@ -14,7 +14,7 @@ void main() {
 
 	for (int z = 0; z < 2; z++) {
 
-		pointer = imp;
+		pointer = imp; // pointer = imp[0]
 
 		for (int i = 0; i < 10; i++) {
 
