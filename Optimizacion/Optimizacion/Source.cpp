@@ -2,7 +2,6 @@
 #include <conio.h>
 #include <math.h>
 #define PI 3.141592
-#define GradToRad(A)(A)*(PI/180)
 
 using namespace std;
 
@@ -1295,25 +1294,29 @@ void cuaternios() {
 	cin >> theta;
 	theta = theta / 2;
 
-	s = cos(GradToRad(theta));
-
-	cout << s;
-
-	system("pause");
 	u = (vx * vx) + (vy * vy) + (vz * vz);
 
 	vx = vx / sqrt(u);
 	vy = vy / sqrt(u);
 	vz = vz / sqrt(u);
 
-	vx = vx * sin(theta);
-	vy = vy * sin(theta);
-	vz = vz * sin(theta);
+	if (theta == 90) {
+		s = 0;
+	}
+	else {
+		theta = theta * (PI / 180);
+
+		s = cos(theta);
+		vx = vx * sin(theta);
+		vy = vy * sin(theta);
+		vz = vz * sin(theta);
+
+	}
 
 	q[0].filas = 3;
 	q[0].columnas = 3;
 
-	q[0].inthemat[1][1] = 1 - (2 * vy * vy) - 2 * pow(vz, 2);
+	q[0].inthemat[1][1] = 1 - (2 * pow(vy,2)) - (2 * pow(vz, 2));
 	q[0].inthemat[1][2] = (2 * vx * vy) - (2 * s * vz);
 	q[0].inthemat[1][3] = (2 * vx * vz)+ (2 * s * vy);
 		
