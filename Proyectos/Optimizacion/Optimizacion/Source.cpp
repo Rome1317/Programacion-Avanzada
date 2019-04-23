@@ -1,7 +1,5 @@
 #include <iostream>
-#include <conio.h>
 #include <math.h>
-#define PI 3.141592
 
 using namespace std;
 
@@ -47,6 +45,7 @@ float vz = 0;
 float theta = 0;
 float s = 0;
 float u = 0;
+const float PI = 3.141592;
 
 char first;
 char second;
@@ -122,7 +121,7 @@ x_axis xaxis[1];
 y_axis yaxis[1];
 z_axis zaxis[1];
 puntos p[1];
-transformacion transformation[7];
+transformacion transformation[10];
 cuaternio q[1];
 
 matriz database[27];
@@ -147,7 +146,7 @@ void menu() {
 	cout << "B. Matrices Registradas" << endl;
 	cout << "C. Operaciones" << endl;
 	cout << "D. Matriz Compuesta" << endl;
-	cout << "E. Cuaternios" << endl;
+	cout << "E. Cuaterniones" << endl;
 	cout << "F. Salir del Menu" << endl;
 	cin >> option;
 
@@ -747,12 +746,20 @@ void translate() {
 
 	for (int i = 1; i <= a; i++) {
 
-		int j = 1;
+		if (transformation[idpoints].inthemat[1][i] < 0.01 && transformation[idpoints].inthemat[1][i] > 0 || transformation[idpoints].inthemat[1][i] < 0 && transformation[idpoints].inthemat[1][i] > -0.01) {
+			transformation[idpoints].inthemat[1][i] = 0;
+		}
+		if (transformation[idpoints].inthemat[2][i] < 0.01 && transformation[idpoints].inthemat[2][i] > 0 || transformation[idpoints].inthemat[2][i] < 0 && transformation[idpoints].inthemat[2][i] > -0.01) {
+			transformation[idpoints].inthemat[2][1] = 0;
+		}
+		if (transformation[idpoints].inthemat[3][i] < 0.01 && transformation[idpoints].inthemat[3][i] > 0 || transformation[idpoints].inthemat[3][i] < 0 && transformation[idpoints].inthemat[3][i] > -0.01) {
+			transformation[idpoints].inthemat[3][i] = 0;
+		}
 
 		cout << "T Punto " << i << ": " << endl;
-		cout << "x': " << transformation[idpoints].inthemat[j][i] << endl;
-		cout << "y': " << transformation[idpoints].inthemat[j + 1][i] << endl;
-		cout << "z': " << transformation[idpoints].inthemat[j + 2][i] << endl;
+		cout << "x': " << transformation[idpoints].inthemat[1][i] << endl;
+		cout << "y': " << transformation[idpoints].inthemat[2][i] << endl;
+		cout << "z': " << transformation[idpoints].inthemat[3][i] << endl;
 
 		cout << endl;
 	}
@@ -846,12 +853,20 @@ void scale() {
 
 	for (int i = 1; i <= a; i++) {
 
-		int j = 1;
+		if (transformation[idpoints].inthemat[1][i] < 0.01 && transformation[idpoints].inthemat[1][i] > 0 || transformation[idpoints].inthemat[1][i] < 0 && transformation[idpoints].inthemat[1][i] > -0.01) {
+			transformation[idpoints].inthemat[1][i] = 0;
+		}
+		if (transformation[idpoints].inthemat[2][i] < 0.01 && transformation[idpoints].inthemat[2][i] > 0 || transformation[idpoints].inthemat[2][i] < 0 && transformation[idpoints].inthemat[2][i] > -0.01) {
+			transformation[idpoints].inthemat[2][1] = 0;
+		}
+		if (transformation[idpoints].inthemat[3][i] < 0.01 && transformation[idpoints].inthemat[3][i] > 0 || transformation[idpoints].inthemat[3][i] < 0 && transformation[idpoints].inthemat[3][i] > -0.01) {
+			transformation[idpoints].inthemat[3][i] = 0;
+		}
 
 		cout << "S Punto " << i << ": " << endl;
-		cout << "x': " << transformation[idpoints].inthemat[j][i] << endl;
-		cout << "y': " << transformation[idpoints].inthemat[j + 1][i] << endl;
-		cout << "z': " << transformation[idpoints].inthemat[j + 2][i] << endl;
+		cout << "x': " << transformation[idpoints].inthemat[1][i] << endl;
+		cout << "y': " << transformation[idpoints].inthemat[2][i] << endl;
+		cout << "z': " << transformation[idpoints].inthemat[3][i] << endl;
 
 		cout << endl;
 	}
@@ -969,12 +984,20 @@ void xrotate() {
 	if ( y == 0 && z == 0) {
 		for (int i = 1; i <= a; i++) {
 
-			int j = 1;
+			if (transformation[idpoints].inthemat[1][i] < 0.01 && transformation[idpoints].inthemat[1][i] > 0 || transformation[idpoints].inthemat[1][i] < 0 && transformation[idpoints].inthemat[1][i] > -0.01) {
+				transformation[idpoints].inthemat[1][i] = 0;
+			}
+			if (transformation[idpoints].inthemat[2][i] < 0.01 && transformation[idpoints].inthemat[2][i] > 0 || transformation[idpoints].inthemat[2][i] < 0 && transformation[idpoints].inthemat[2][i] > -0.01) {
+				transformation[idpoints].inthemat[2][1] = 0;
+			}
+			if (transformation[idpoints].inthemat[3][i] < 0.01 && transformation[idpoints].inthemat[3][i] > 0 || transformation[idpoints].inthemat[3][i] < 0 && transformation[idpoints].inthemat[3][i] > -0.01) {
+				transformation[idpoints].inthemat[3][i] = 0;
+			}
 
 			cout << "Rx Punto " << i << ": " << endl;
-			cout << "x': " << transformation[idpoints].inthemat[j][i] << endl;
-			cout << "y': " << transformation[idpoints].inthemat[j + 1][i] << endl;
-			cout << "z': " << transformation[idpoints].inthemat[j + 2][i] << endl;
+			cout << "x': " << transformation[idpoints].inthemat[1][i] << endl;
+			cout << "y': " << transformation[idpoints].inthemat[2][i] << endl;
+			cout << "z': " << transformation[idpoints].inthemat[3][i] << endl;
 
 			cout << endl;
 		}
@@ -1080,11 +1103,19 @@ void yrotate() {
 			cout << "Rxy Punto " << i << ": " << endl;
 		}
 
-		int j = 1;
+		if (transformation[idpoints].inthemat[1][i] < 0.01 && transformation[idpoints].inthemat[1][i] > 0 || transformation[idpoints].inthemat[1][i] < 0 && transformation[idpoints].inthemat[1][i] > -0.01) {
+			transformation[idpoints].inthemat[1][i] = 0;
+		}
+		if (transformation[idpoints].inthemat[2][i] < 0.01 && transformation[idpoints].inthemat[2][i] > 0 || transformation[idpoints].inthemat[2][i] < 0 && transformation[idpoints].inthemat[2][i] > -0.01) {
+			transformation[idpoints].inthemat[2][1] = 0;
+		}
+		if (transformation[idpoints].inthemat[3][i] < 0.01 && transformation[idpoints].inthemat[3][i] > 0 || transformation[idpoints].inthemat[3][i] < 0 && transformation[idpoints].inthemat[3][i] > -0.01) {
+			transformation[idpoints].inthemat[3][i] = 0;
+		}
 
-		cout << "x': " << transformation[idpoints].inthemat[j][i] << endl;
-		cout << "y': " << transformation[idpoints].inthemat[j + 1][i] << endl;
-		cout << "z': " << transformation[idpoints].inthemat[j + 2][i] << endl;
+		cout << "x': " << transformation[idpoints].inthemat[1][i] << endl;
+		cout << "y': " << transformation[idpoints].inthemat[2][i] << endl;
+		cout << "z': " << transformation[idpoints].inthemat[3][i] << endl;
 
 		cout << endl;
 	}
@@ -1191,12 +1222,22 @@ void zrotate() {
 		else {
 			cout << "Rxyz Punto " << i << ": " << endl;
 		}
+		
 
-		int j = 1;
+		if (transformation[idpoints].inthemat[1][i] < 0.01 && transformation[idpoints].inthemat[1][i] > 0 || transformation[idpoints].inthemat[1][i] < 0 && transformation[idpoints].inthemat[1][i] > -0.01) {
+			transformation[idpoints].inthemat[1][i] = 0;
+		}
+		if (transformation[idpoints].inthemat[2][i] < 0.01 && transformation[idpoints].inthemat[2][i] > 0 || transformation[idpoints].inthemat[2][i] < 0 && transformation[idpoints].inthemat[2][i] > -0.01) {
+			transformation[idpoints].inthemat[2][1] = 0;
+		}
+		if (transformation[idpoints].inthemat[3][i] < 0.01 && transformation[idpoints].inthemat[3][i] > 0 || transformation[idpoints].inthemat[3][i] < 0 && transformation[idpoints].inthemat[3][i] > -0.01) {
+			transformation[idpoints].inthemat[3][i] = 0;
+		}
 
-		cout << "x': " << transformation[idpoints].inthemat[j][i] << endl;
-		cout << "y': " << transformation[idpoints].inthemat[j + 1][i] << endl;
-		cout << "z': " << transformation[idpoints].inthemat[j + 2][i] << endl;
+		
+		cout << "x': " << transformation[idpoints].inthemat[1][i] << endl;
+		cout << "y': " << transformation[idpoints].inthemat[2][i] << endl;
+		cout << "z': " << transformation[idpoints].inthemat[3][i] << endl;
 
 		cout << endl;
 	}
@@ -1262,7 +1303,7 @@ void compuesta() {
 void cuaternios() {
 
 	system("cls");
-	cout << "Cuaternios: " << endl;
+	cout << "Cuaterniones: " << endl;
 	cout << endl;
 
 	cout << "Punto: " << endl;
@@ -1293,6 +1334,7 @@ void cuaternios() {
 	cout << "Ángulo: ";
 	cin >> theta;
 	theta = theta / 2;
+	theta = theta * (PI / 180);
 
 	u = (vx * vx) + (vy * vy) + (vz * vz);
 
@@ -1300,18 +1342,10 @@ void cuaternios() {
 	vy = vy / sqrt(u);
 	vz = vz / sqrt(u);
 
-	if (theta == 90) {
-		s = 0;
-	}
-	else {
-		theta = theta * (PI / 180);
-
-		s = cos(theta);
-		vx = vx * sin(theta);
-		vy = vy * sin(theta);
-		vz = vz * sin(theta);
-
-	}
+	s = cos(theta);
+	vx = vx * sin(theta);
+	vy = vy * sin(theta);
+	vz = vz * sin(theta);
 
 	q[0].filas = 3;
 	q[0].columnas = 3;
@@ -1359,6 +1393,16 @@ void cuaternios() {
 		}
 	}
 
+	if (transformation[idpoints].inthemat[1][1] < 0.01 && transformation[idpoints].inthemat[1][1] > 0 || transformation[idpoints].inthemat[1][1] < 0 && transformation[idpoints].inthemat[1][1] > -0.01) {
+		transformation[idpoints].inthemat[1][1] = 0;
+	}
+	if (transformation[idpoints].inthemat[2][1] < 0.01 && transformation[idpoints].inthemat[2][1] > 0 || transformation[idpoints].inthemat[2][1] < 0 && transformation[idpoints].inthemat[2][1] > -0.01) {
+		transformation[idpoints].inthemat[2][1] = 0;
+	}
+	if (transformation[idpoints].inthemat[3][1] < 0.01 && transformation[idpoints].inthemat[3][1] > 0 || transformation[idpoints].inthemat[3][1] < 0 && transformation[idpoints].inthemat[3][1] > -0.01) {
+		transformation[idpoints].inthemat[3][1] = 0;
+	}
+
 	cout << endl;
 
 	cout << "Q' Punto: " << endl;
@@ -1373,7 +1417,6 @@ void cuaternios() {
 	system("pause > nul");
 
 	menu();
-
 }
 
 
