@@ -3,16 +3,18 @@
 // Usado por Final.rc
 //
 #define SEARCH                          2
+#define IDEDIT                          3
+#define IDCANCEL2                       3
+#define IDCANCEL3                       4
 #define IDD_INFO                        101
 #define IDD_NEWDATE                     103
 #define IDD_AGENDA                      105
-#define IDD_EDITAR                      107
-#define IDD_ELIMINAR                    109
 #define IDR_MENU1                       112
 #define IDD_LOGIN                       113
 #define IDD_SINGUP                      115
 #define IDD_PRINCIPAL                   117
 #define IDD_PASSWORD                    119
+#define IDD_EDITAR                      120
 #define IDC_STATIC7                     1001
 #define IDC_COMBO1                      1002
 #define IDC_STATIC2                     1002
@@ -46,8 +48,6 @@
 #define IDC_BUTTON3                     1026
 #define IDC_RADIO5                      1026
 #define IDC_RADIO6                      1027
-#define IDC_CHECK1                      1028
-#define IDC_CHECK2                      1029
 #define IDC_STATIC14                    1029
 #define IDC_DATETIMEPICKER2             1030
 #define IDC_STATIC15                    1031
