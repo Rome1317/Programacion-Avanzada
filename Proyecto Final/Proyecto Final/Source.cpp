@@ -7,6 +7,7 @@ void menu();
 void registrar();
 void matrices();
 void operaciones();
+void matricescomp();
 
 void buscar();
 void suma(int, int);
@@ -22,6 +23,8 @@ void xrotate();
 void yrotate();
 void zrotate();
 void points();
+
+void compuesta2();
 
 void cuaternios();
 
@@ -116,16 +119,16 @@ struct cuaternio {
 	float in[5][5];
 };
 
-traslacion t[1];
-escala e[1];
-x_axis rx[1];
-y_axis ry[1];
-z_axis rz[1];
-puntos p[1];
-transformacion mt[10];
-cuaternio q[1];
+traslacion t;
+escala e;
+x_axis rx;
+y_axis ry;
+z_axis rz;
+puntos p;
+cuaternio q;
+transformacion mt[11];
 
-matriz m[27];
+matriz m[26];
 
 int main() {
 
@@ -148,7 +151,8 @@ void menu() {
 	cout << "C. Operaciones" << endl;
 	cout << "D. Matriz Compuesta" << endl;
 	cout << "E. Cuaterniones" << endl;
-	cout << "F. Salir del Menu" << endl;
+	cout << "F. Matrices Compuestas Registradas" << endl;
+	cout << "G. Salir del Menu" << endl;
 	cin >> option;
 
 	if (option > 96) {
@@ -183,6 +187,11 @@ void menu() {
 
 		break;
 	case 'F':
+
+		matricescomp();
+
+		break;
+	case 'G':
 
 		system("cls");
 		cout << "Ha salido del programa." << endl;
@@ -618,6 +627,14 @@ void multi(int, int) {
 
 void points() {
 
+	for (int i = 1; i <= p.filas; i++) {
+		for (int j = 1; j <= p.columnas; j++) {
+
+			t.in[i][j] = p.in[i][j];
+		}
+	}
+
+
 	system("cls");
 	cout << "Puntos: " << endl;
 	cout << endl;
@@ -626,8 +643,8 @@ void points() {
 	cin >> a;
 	cout << endl;
 
-	p[0].filas = 4;
-	p[0].columnas = a;
+	p.filas = 4;
+	p.columnas = a;
 
 	for (int i = 1; i <= a; i++) {
 
@@ -641,23 +658,69 @@ void points() {
 		cout << endl;
 
 		int j = 1;
-		p[0].in[j][i] = x;
-		p[0].in[j + 1][i] = y;
-		p[0].in[j + 2][i] = z;
-		p[0].in[j + 3][i] = 1;
+		p.in[j][i] = x;
+		p.in[j + 1][i] = y;
+		p.in[j + 2][i] = z;
+		p.in[j + 3][i] = 1;
 
 	}
 
 	/*
 	cout << "Matriz de Puntos:" << endl;
-	for (int j = 1; j <= p[0].filas; j++) {
-		for (int k = 1; k <= p[0].columnas; k++) {
-			cout << "[" << p[0].inthemat[j][k] << "]";
+	for (int j = 1; j <= p.filas; j++) {
+		for (int k = 1; k <= p.columnas; k++) {
+			cout << "[" << p.inthemat[j][k] << "]";
 		}
 		cout << endl;
 	}
 	system("pause>nul");
 	*/
+
+
+	mt[idt].filas = 4;
+	mt[idt].columnas = p.columnas;
+
+	for (int i = 1; i <= mt[idt].filas; i++) {
+		for (int j = 1; j <= mt[idt].columnas; j++) {
+
+			mt[idt].in[i][j] = 0;
+
+			for (int k = 1; k <= p.filas; k++) {
+
+				mt[idt].in[i][j] = mt[idt].in[i][j] + t.in[i][k] * p.in[k][j];
+
+			}
+		}
+	}
+
+	cout << "Puntos Resultantes:" << endl;
+	cout << endl;
+
+	for (int i = 1; i <= a; i++) {
+
+		if (mt[idt].in[1][i] < 0.01 && mt[idt].in[1][i] > 0 || mt[idt].in[1][i] < 0 && mt[idt].in[1][i] > -0.01) {
+			mt[idt].in[1][i] = 0;
+		}
+		if (mt[idt].in[2][i] < 0.01 && mt[idt].in[2][i] > 0 || mt[idt].in[2][i] < 0 && mt[idt].in[2][i] > -0.01) {
+			mt[idt].in[2][1] = 0;
+		}
+		if (mt[idt].in[3][i] < 0.01 && mt[idt].in[3][i] > 0 || mt[idt].in[3][i] < 0 && mt[idt].in[3][i] > -0.01) {
+			mt[idt].in[3][i] = 0;
+		}
+
+		cout << "Punto " << i << ": " << endl;
+		cout << "x': " << mt[idt].in[1][i] << endl;
+		cout << "y': " << mt[idt].in[2][i] << endl;
+		cout << "z': " << mt[idt].in[3][i] << endl;
+
+		cout << endl;
+	}
+
+	system("pause > nul");
+
+	idt++;
+	menu();
+
 }
 
 void translate() {
@@ -675,90 +738,72 @@ void translate() {
 	cin >> z;
 	cout << endl;
 
-	t[0].filas = 4;
-	t[0].columnas = 4;
+	t.filas = 4;
+	t.columnas = 4;
 
 	// traslacion
-	for (int i = 1; i <= t[0].filas; i++) {
-		for (int j = 1; j <= t[0].columnas; j++) {
+	for (int i = 1; i <= t.filas; i++) {
+		for (int j = 1; j <= t.columnas; j++) {
 
 			if (i == j) {
-				t[0].in[i][j] = 1;
+				t.in[i][j] = 1;
 			}
 			else {
-				t[0].in[i][j] = 0;
+				t.in[i][j] = 0;
 			}
 		}
 	}
 
-	t[0].in[1][4] = x;
-	t[0].in[2][4] = y;
-	t[0].in[3][4] = z;
+	t.in[1][4] = x;
+	t.in[2][4] = y;
+	t.in[3][4] = z;
 
 	/*
 	cout << "Matriz Traslacion:" << endl;
-	for (int j = 1; j <= t[0].filas; j++) {
-		for (int k = 1; k <= t[0].columnas; k++) {
-			cout << "[" << t[0].in[j][k] << "]";
+	for (int j = 1; j <= t.filas; j++) {
+		for (int k = 1; k <= t.columnas; k++) {
+			cout << "[" << t.in[j][k] << "]";
 		}
 		cout << endl;
 	}
 	system("pause>nul");
 	*/
 
-	mt[idt].filas = t[0].filas;
-	mt[idt].columnas = p[0].columnas;
+	mt[idt].filas = 4;
+	mt[idt].columnas = 4;
 
-	for (int i = 1; i <= t[0].filas; i++) {
-		for (int j = 1; j <= p[0].columnas; j++) {
+	for (int i = 1; i <= mt[idt].filas; i++) {
+		for (int j = 1; j <= mt[idt].columnas; j++) {
 
 			mt[idt].in[i][j] = 0;
 
-			for (int k = 1; k <= p[0].filas; k++) {
+			for (int k = 1; k <= p.filas; k++) {
 
-				mt[idt].in[i][j] = mt[idt].in[i][j] + t[0].in[i][k] * p[0].in[k][j];
+				mt[idt].in[i][j] = mt[idt].in[i][j] + t.in[i][k] * p.in[k][j];
 
 			}
 		}
 	}
 
-	/*
+	cout << "Matriz Compuesta: " << endl;
+
+	for (int i = 1; i <= mt[idt].filas; i++) {
+		for (int j = 1; j <= mt[idt].columnas; j++) {
+			cout << "[" << mt[idt].in[i][j] << "]";
+		}
+		cout << endl;
+	}
+	
+	for (int i = 1; i <= p.filas; i++) {
+		for (int j = 1; j <= p.columnas; j++) {
+
+			p.in[i][j] = mt[idt].in[i][j];
+		}
+	}
+
 	cout << endl;
-	cout << "T" << p->idmat <<":" << endl;
-	for (int j = 1; j <= transformation[idpoints].filas; j++) {
-		for (int k = 1; k <= transformation[idpoints].columnas; k++) {
-			cout << "[" << transformation[idpoints].in[j][k] << "]";
-		}
-		cout << endl;
-	}
-	*/
 
-	for (int i = 1; i <= a; i++) {
-
-		if (mt[idt].in[1][i] < 0.01 && mt[idt].in[1][i] > 0 || mt[idt].in[1][i] < 0 && mt[idt].in[1][i] > -0.01) {
-			mt[idt].in[1][i] = 0;
-		}			
-		if (mt[idt].in[2][i] < 0.01 && mt[idt].in[2][i] > 0 || mt[idt].in[2][i] < 0 && mt[idt].in[2][i] > -0.01) {
-			mt[idt].in[2][1] = 0;
-		}			
-		if (mt[idt].in[3][i] < 0.01 && mt[idt].in[3][i] > 0 || mt[idt].in[3][i] < 0 && mt[idt].in[3][i] > -0.01) {
-			mt[idt].in[3][i] = 0;
-		}
-
-		cout << "T Punto " << i << ": " << endl;
-		cout << "x': " << mt[idt].in[1][i] << endl;
-		cout << "y': " << mt[idt].in[2][i] << endl;
-		cout << "z': " << mt[idt].in[3][i] << endl;
-
-		cout << endl;
-	}
-
-	idt++;
-
-	system("pause > nul");
-
-	menu();
-
+	compuesta2();
 }
 
 void scale() {
@@ -776,92 +821,75 @@ void scale() {
 	cin >> z;
 	cout << endl;
 
-	e[0].filas = 4;
-	e[0].columnas = 4;
+	e.filas = 4;
+	e.columnas = 4;
 
 	//Escalacion
-	for (int i = 1; i <= e[0].filas; i++) {
-		for (int j = 1; j <= e[0].columnas; j++) {
+	for (int i = 1; i <= e.filas; i++) {
+		for (int j = 1; j <= e.columnas; j++) {
 
 			if (i == j) {
-				e[0].in[i][j] = 1;
+				e.in[i][j] = 1;
 			}
 			else {
-				e[0].in[i][j] = 0;
+				e.in[i][j] = 0;
 			}
 		}
 	}
 		 
-	e[0].in[1][1] = x;
-	e[0].in[2][2] = y;
-	e[0].in[3][3] = z;
+	e.in[1][1] = x;
+	e.in[2][2] = y;
+	e.in[3][3] = z;
 
 	/*
 	cout << "Matriz Escalacion:" << endl;
-	for (int j = 1; j <= e[0].filas; j++) {
-		for (int k = 1; k <= e[0].columnas; k++) {
-			cout << "[" << e[0].in[j][k] << "]";
+	for (int j = 1; j <= e.filas; j++) {
+		for (int k = 1; k <= e.columnas; k++) {
+			cout << "[" << e.in[j][k] << "]";
 		}
 		cout << endl;
 	}
 	system("pause>nul");
 	*/
 
-	mt[idt].filas = e[0].filas;
-	mt[idt].columnas = e[0].columnas;
+	mt[idt].filas = 4;
+	mt[idt].columnas = 4;
 
-	for (int i = 1; i <= e[0].filas; i++) {
-		for (int j = 1; j <= e[0].columnas; j++) {
+	for (int i = 1; i <= mt[idt].filas; i++) {
+		for (int j = 1; j <= mt[idt].columnas; j++) {
 
 			mt[idt].in[i][j] = 0;
 
-			for (int k = 1; k <= p[0].filas; k++) {
+			for (int k = 1; k <= p.filas; k++) {
 
-				mt[idt].in[i][j] = mt[idt].in[i][j] + e[0].in[i][k] * p[0].in[k][j];
+				mt[idt].in[i][j] = mt[idt].in[i][j] + e.in[i][k] * p.in[k][j];
 
 			}
 		}
 	}
 
-	/*
+	cout << "Matriz Compuesta: " << endl;
+	
+	for (int i = 1; i <= mt[idt].filas; i++) {
+		for (int j = 1; j <= mt[idt].columnas; j++) {
+
+			cout << "[" << mt[idt].in[i][j] << "]";
+		}
+		cout << endl;
+	}
+
+	for (int i = 1; i <= p.filas; i++) {
+		for (int j = 1; j <= p.columnas; j++) {
+
+			p.in[i][j] = mt[idt].in[i][j];
+		}
+	}
+
+
 	cout << endl;
-	cout << "S" << p->idmat <<":" << endl;
-	for (int j = 1; j <= transformation[idpoints].filas; j++) {
-		for (int k = 1; k <= transformation[idpoints].columnas; k++) {
 
-			cout << "[" << transformation[idpoints].in[j][k] << "]";
-		}
-		cout << endl;
-	}
+	compuesta2();
 
-	system("pause > nul");
-	*/
-
-	for (int i = 1; i <= a; i++) {
-
-		if (mt[idt].in[1][i] < 0.01 && mt[idt].in[1][i] > 0 || mt[idt].in[1][i] < 0 && mt[idt].in[1][i] > -0.01) {
-			mt[idt].in[1][i] = 0;
-		}			
-		if (mt[idt].in[2][i] < 0.01 && mt[idt].in[2][i] > 0 || mt[idt].in[2][i] < 0 && mt[idt].in[2][i] > -0.01) {
-			mt[idt].in[2][1] = 0;
-		}			
-		if (mt[idt].in[3][i] < 0.01 && mt[idt].in[3][i] > 0 || mt[idt].in[3][i] < 0 && mt[idt].in[3][i] > -0.01) {
-			mt[idt].in[3][i] = 0;
-		}
-
-		cout << "S Punto " << i << ": " << endl;
-		cout << "x': " << mt[idt].in[1][i] << endl;
-		cout << "y': " << mt[idt].in[2][i] << endl;
-		cout << "z': " << mt[idt].in[3][i] << endl;
-
-		cout << endl;
-	}
-
-	idt++;
-
-	system("pause > nul");
-
-	menu();
 }
 
 void rotate() {
@@ -897,336 +925,257 @@ void rotate() {
 		zrotate();
 	}
 
-	idt++;
-	menu();
+	compuesta2();
+
 }
 
 void xrotate() {
 
-	rx[0].filas = 4;
-	rx[0].columnas = 4;
+	rx.filas = 4;
+	rx.columnas = 4;
 
 	//Rotacion x
 	for (int i = 1; i <= 4; i++) {
 		for (int j = 1; j <= 4; j++) {
 
 			if (i == j) {
-				rx[0].in[i][j] = 1;
+				rx.in[i][j] = 1;
 			}		  
 			else {	  
-				rx[0].in[i][j] = 0;
+				rx.in[i][j] = 0;
 			}
 		}
 	}
 
-	rx[0].in[2][2] = cos(x);
-	rx[0].in[2][3] = -sin(x);
-	rx[0].in[3][2] = sin(x);
-	rx[0].in[3][3] = cos(x);
+	rx.in[2][2] = cos(x);
+	rx.in[2][3] = -sin(x);
+	rx.in[3][2] = sin(x);
+	rx.in[3][3] = cos(x);
 
 	/*
 	cout << "Matriz Rotacion en X:" << endl;
-	for (int j = 1; j <= rx[0].filas; j++) {
-		for (int k = 1; k <= rx[0].columnas; k++) {
+	for (int j = 1; j <= rx.filas; j++) {
+		for (int k = 1; k <= rx.columnas; k++) {
 
-			cout << "[" << rx[0].in[j][k] << "]";
+			cout << "[" << rx.in[j][k] << "]";
 		}
 		cout << endl;
 	}
 	system("pause>nul");
 	*/
 
-	mt[idt].filas = rx[0].filas;
-	mt[idt].columnas = p[0].columnas;
 
-	for (int i = 1; i <= rx[0].filas; i++) {
-		for (int j = 1; j <= p[0].columnas; j++) {
+	mt[idt].filas = 4;
+	mt[idt].columnas = 4;
+
+	for (int i = 1; i <= mt[idt].filas; i++) {
+		for (int j = 1; j <= mt[idt].columnas; j++) {
 
 			mt[idt].in[i][j] = 0;
 
-			for (int k = 1; k <= p[0].filas; k++) {
+			for (int k = 1; k <= p.filas; k++) {
 
-				mt[idt].in[i][j] = mt[idt].in[i][j] + rx[0].in[i][k] * p[0].in[k][j];
+				mt[idt].in[i][j] = mt[idt].in[i][j] + rx.in[i][k] * p.in[k][j];
+
 			}
 		}
 	}
 
-	/*
-	cout << endl;
-	cout << "Rx" << p->idmat <<":" << endl;
-	for (int j = 1; j <= mt[idt].filas; j++) {
-		for (int k = 1; k <= mv[idt].columnas; k++) {
+	cout << "Matriz Compuesta: " << endl;
 
-			cout << "[" << mv[idt].in[j][k] << "]";
+	for (int i = 1; i <= mt[idt].filas; i++) {
+		for (int j = 1; j <= mt[idt].columnas; j++) {
+
+			if (mt[idt].in[i][j] < 0.01 && mt[idt].in[i][j] > 0 || mt[idt].in[i][j] < 0 && mt[idt].in[i][j] > -0.01) {
+				mt[idt].in[i][j] = 0;
+			}
+
+			cout << "[" << mt[idt].in[i][j] << "]";
 		}
 		cout << endl;
 	}
-	*/
 
-	if (y == 0 && z == 0) {
-		for (int i = 1; i <= a; i++) {
+	for (int i = 1; i <= p.filas; i++) {
+		for (int j = 1; j <= p.columnas; j++) {
 
-			if (mt[idt].in[1][i] < 0.01 && mt[idt].in[1][i] > 0 || mt[idt].in[1][i] < 0 && mt[idt].in[1][i] > -0.01) {
-				mt[idt].in[1][i] = 0;
-			}
-			if (mt[idt].in[2][i] < 0.01 && mt[idt].in[2][i] > 0 || mt[idt].in[2][i] < 0 && mt[idt].in[2][i] > -0.01) {
-				mt[idt].in[2][1] = 0;
-			}
-			if (mt[idt].in[3][i] < 0.01 && mt[idt].in[3][i] > 0 || mt[idt].in[3][i] < 0 && mt[idt].in[3][i] > -0.01) {
-				mt[idt].in[3][i] = 0;
-			}
-
-			cout << "Rx Punto " << i << ": " << endl;
-			cout << "x': " << mt[idt].in[1][i] << endl;
-			cout << "y': " << mt[idt].in[2][i] << endl;
-			cout << "z': " << mt[idt].in[3][i] << endl;
-
-			cout << endl;
+			p.in[i][j] = mt[idt].in[i][j];
 		}
-
-		system("pause > nul");
 	}
+
+
+	cout << endl;
 }
+
 
 void yrotate() {
 
-	ry[0].filas = 4;
-	ry[0].columnas = 4;
+	ry.filas = 4;
+	ry.columnas = 4;
 
 	//Rotacion y
-	for (int i = 1; i <= ry[0].filas; i++) {
-		for (int j = 1; j <= ry[0].columnas; j++) {
+	for (int i = 1; i <= ry.filas; i++) {
+		for (int j = 1; j <= ry.columnas; j++) {
 
 			if (i == j) {
-				ry[0].in[i][j] = 1;
+				ry.in[i][j] = 1;
 			}
 			else {
-				ry[0].in[i][j] = 0;
+				ry.in[i][j] = 0;
 			}
 		}
 	}
 
-	ry[0].in[1][1] = cos(y);
-	ry[0].in[1][3] = sin(y);
-	ry[0].in[3][1] = -sin(y);
-	ry[0].in[3][3] = cos(y);
+	ry.in[1][1] = cos(y);
+	ry.in[1][3] = sin(y);
+	ry.in[3][1] = -sin(y);
+	ry.in[3][3] = cos(y);
 
 	/*
 	cout << "Matriz Rotacion en Y:" << endl;
-	for (int j = 1; j <= ry[0].filas; j++) {
-	for (int k = 1; k <= ry[0].columnas; k++) {
-	cout << "[" << ry[0].in[j][k] << "]";
+	for (int j = 1; j <= ry.filas; j++) {
+	for (int k = 1; k <= ry.columnas; k++) {
+	cout << "[" << ry.in[j][k] << "]";
 	}
 	cout << endl;
 	}
 	system("pause>nul");
 	*/
 
-	mt[idt].filas = ry[0].filas;
-	mt[idt].columnas = p[0].columnas;
+	mt[idt].filas = 4;
+	mt[idt].columnas = 4;
 
+	for (int i = 1; i <= mt[idt].filas; i++) {
+		for (int j = 1; j <= mt[idt].columnas; j++) {
 
-	if (x == 0) {
+			mt[idt].in[i][j] = 0;
 
-		for (int i = 1; i <= ry[0].filas; i++) {
-			for (int j = 1; j <= p[0].columnas; j++) {
+			for (int k = 1; k <= p.filas; k++) {
 
+				mt[idt].in[i][j] = mt[idt].in[i][j] + ry.in[i][k] * p.in[k][j];
+
+			}
+		}
+	}
+
+	cout << "Matriz Compuesta: " << endl;
+
+	for (int i = 1; i <= mt[idt].filas; i++) {
+		for (int j = 1; j <= mt[idt].columnas; j++) {
+
+			if (mt[idt].in[i][j] < 0.01 && mt[idt].in[i][j] > 0 || mt[idt].in[i][j] < 0 && mt[idt].in[i][j] > -0.01) {
 				mt[idt].in[i][j] = 0;
-
-				for (int k = 1; k <= p[0].filas; k++) {
-
-					mt[idt].in[i][j] = mt[idt].in[i][j] + ry[0].in[i][k] * p[0].in[k][j];
-
-				}
 			}
+
+			cout << "[" << mt[idt].in[i][j] << "]";
 		}
-	}
-
-	else {
-
-		mt[idt + 1].filas = ry[0].filas;
-		mt[idt + 1].columnas = p[0].columnas;
-
-		for (int i = 1; i <= ry[0].filas; i++) {
-			for (int j = 1; j <= p[0].columnas; j++) {
-
-				mt[idt + 1].in[i][j] = 0;
-
-				for (int k = 1; k <= p[0].filas; k++) {
-
-					mt[idt + 1].in[i][j] = mt[idt + 1].in[i][j] + ry[0].in[i][k] * mt[idt].in[k][j];
-
-				}
-			}
-		}
-
-		idt++;
-	}
-
-	/*
-	cout << endl;
-	cout << "Ry" << p->idmat <<":" << endl;
-	for (int j = 1; j <= mv[idt].filas; j++) {
-	for (int k = 1; k <= mv[idt].columnas; k++) {
-	cout << "[" <<  mv[idt].in[j][k] << "]";
-	}
-	cout << endl;
-	}
-	*/
-
-	for (int i = 1; i <= a; i++) {
-
-		if (x == 0 && z == 0) {
-			cout << "Ry Punto " << i << ": " << endl;
-		}
-		else {
-			cout << "Rxy Punto " << i << ": " << endl;
-		}
-
-		if (mt[idt].in[1][i] < 0.01 && mt[idt].in[1][i] > 0 || mt[idt].in[1][i] < 0 && mt[idt].in[1][i] > -0.01) {
-			mt[idt].in[1][i] = 0;
-		}
-		if (mt[idt].in[2][i] < 0.01 && mt[idt].in[2][i] > 0 || mt[idt].in[2][i] < 0 && mt[idt].in[2][i] > -0.01) {
-			mt[idt].in[2][1] = 0;
-		}
-		if (mt[idt].in[3][i] < 0.01 && mt[idt].in[3][i] > 0 || mt[idt].in[3][i] < 0 && mt[idt].in[3][i] > -0.01) {
-			mt[idt].in[3][i] = 0;
-		}
-
-		cout << "x': " << mt[idt].in[1][i] << endl;
-		cout << "y': " << mt[idt].in[2][i] << endl;
-		cout << "z': " << mt[idt].in[3][i] << endl;
-
 		cout << endl;
 	}
 
-	system("pause > nul");
+	for (int i = 1; i <= p.filas; i++) {
+		for (int j = 1; j <= p.columnas; j++) {
+
+			p.in[i][j] = mt[idt].in[i][j];
+		}
+	}
+
+	cout << endl;
 }
 
 void zrotate() {
 
-	rz[0].filas = 4;
-	rz[0].columnas = 4;
+	rz.filas = 4;
+	rz.columnas = 4;
 
 	//Rotacion z
-	for (int i = 1; i <= rz[0].filas; i++) {
-		for (int j = 1; j <= rz[0].columnas; j++) {
+	for (int i = 1; i <= rz.filas; i++) {
+		for (int j = 1; j <= rz.columnas; j++) {
 
 			if (i == j) {
-				rz[0].in[i][j] = 1;
+				rz.in[i][j] = 1;
 			}
 			else {
-				rz[0].in[i][j] = 0;
+				rz.in[i][j] = 0;
 			}
 		}
 	}
 
-	rz[0].in[1][1] = cos(z);
-	rz[0].in[1][2] = -sin(z);
-	rz[0].in[2][1] = sin(z);
-	rz[0].in[2][2] = cos(z);
+	rz.in[1][1] = cos(z);
+	rz.in[1][2] = -sin(z);
+	rz.in[2][1] = sin(z);
+	rz.in[2][2] = cos(z);
 
 	/*
 	cout << "Matriz Rotacion en Z:" << endl;
-	for (int j = 1; j <= rz[0].filas; j++) {
-	for (int k = 1; k <= rz[0].columnas; k++) {
-	cout << "[" << rz[0].in[j][k] << "]";
+	for (int j = 1; j <= rz.filas; j++) {
+	for (int k = 1; k <= rz.columnas; k++) {
+	cout << "[" << rz.in[j][k] << "]";
 	}
 	cout << endl;
 	}
 	system("pause>nul");
 	*/
 
-	mt[idt].filas = rz[0].filas;
-	mt[idt].columnas = p[0].columnas;
+	mt[idt].filas = 4;
+	mt[idt].columnas = 4;
+
+	for (int i = 1; i <= mt[idt].filas; i++) {
+		for (int j = 1; j <= mt[idt].columnas; j++) {
+
+			mt[idt].in[i][j] = 0;
+
+			for (int k = 1; k <= p.filas; k++) {
+
+				mt[idt].in[i][j] = mt[idt].in[i][j] + rz.in[i][k] * p.in[k][j];
+
+			}
+		}
+	}
+
+	cout << "Matriz Compuesta: " << endl;
 
 
-	if (x == 0 && y == 0) {
-		for (int i = 1; i <= rz[0].filas; i++) {
-			for (int j = 1; j <= p[0].columnas; j++) {
+	for (int i = 1; i <= mt[idt].filas; i++) {
+		for (int j = 1; j <= mt[idt].columnas; j++) {
 
+			if (mt[idt].in[i][j] < 0.01 && mt[idt].in[i][j] > 0 || mt[idt].in[i][j] < 0 && mt[idt].in[i][j] > -0.01) {
 				mt[idt].in[i][j] = 0;
-
-				for (int k = 1; k <= p[0].filas; k++) {
-
-					mt[idt].in[i][j] = mt[idt].in[i][j] + rz[0].in[i][k] * p[0].in[k][j];
-
-				}
 			}
+
+			cout << "[" << mt[idt].in[i][j] << "]";
 		}
-	}
-	else {
-
-
-		mt[idt + 1].filas = rz[0].filas;
-		mt[idt + 1].columnas = p[0].columnas;
-
-		for (int i = 1; i <= rz[0].filas; i++) {
-			for (int j = 1; j <= p[0].columnas; j++) {
-
-				mt[idt + 1].in[i][j] = 0;
-
-				for (int k = 1; k <= p[0].filas; k++) {
-
-					mt[idt + 1].in[i][j] = mt[idt + 1].in[i][j] + rz[0].in[i][k] * mt[idt].in[k][j];
-
-				}
-			}
-		}
-
-		idt++;
-	}
-
-	/*
-	cout << endl;
-	cout << "Rz" << p->idmat <<":" << endl;
-	for (int j = 1; j <= mv[idt].filas; j++) {
-	for (int k = 1; k <= mv[idt].columnas; k++) {
-	cout << "[" << mv[idt].in[j][k] << "]";
-	}
-	cout << endl;
-	}
-	*/
-
-	for (int i = 1; i <= a; i++) {
-
-		if (x == 0 && y == 0) {
-			cout << "Rz Punto " << i << ": " << endl;
-		}
-		else if (x != 0 && y == 0) {
-			cout << "Rxz Punto " << i << ": " << endl;
-		}
-		else if (x == 0 && y != 0) {
-			cout << "Ryz Punto " << i << ": " << endl;
-		}
-		else {
-			cout << "Rxyz Punto " << i << ": " << endl;
-		}
-
-
-		if (mt[idt].in[1][i] < 0.01 && mt[idt].in[1][i] > 0 || mt[idt].in[1][i] < 0 && mt[idt].in[1][i] > -0.01) {
-			mt[idt].in[1][i] = 0;
-		}
-		if (mt[idt].in[2][i] < 0.01 && mt[idt].in[2][i] > 0 || mt[idt].in[2][i] < 0 && mt[idt].in[2][i] > -0.01) {
-			mt[idt].in[2][1] = 0;
-		}
-		if (mt[idt].in[3][i] < 0.01 && mt[idt].in[3][i] > 0 || mt[idt].in[3][i] < 0 && mt[idt].in[3][i] > -0.01) {
-			mt[idt].in[3][i] = 0;
-		}
-
-
-		cout << "x': " << mt[idt].in[1][i] << endl;
-		cout << "y': " << mt[idt].in[2][i] << endl;
-		cout << "z': " << mt[idt].in[3][i] << endl;
-
 		cout << endl;
 	}
 
+	for (int i = 1; i <= p.filas; i++) {
+		for (int j = 1; j <= p.columnas; j++) {
 
-	system("pause > nul");
+			p.in[i][j] = mt[idt].in[i][j];
+		}
+	}
+
+	cout << endl;
 }
 
 void compuesta() {
+
+	if (idt == 11) {
+		idt = 1;
+	}
+
+	p.filas = 4;
+	p.columnas = 4;
+
+	for (int i = 1; i <= p.filas; i++) {
+		for (int j = 1; j <= p.columnas; j++) {
+
+			if (i == j) {
+				p.in[i][j] = 1;
+			}
+			else {
+				p.in[i][j] = 0;
+			}
+		}
+	}
 
 	system("cls");
 	cout << "Matriz Compuesta: " << endl;
@@ -1236,7 +1185,6 @@ void compuesta() {
 	cout << "R. Rotacion" << endl;
 	cout << "S. Escalacion" << endl;
 	cout << "T. Traslacion" << endl;
-	cout << "U. Ir al Menu" << endl;
 	cin >> option;
 
 	if (option > 96) {
@@ -1246,25 +1194,17 @@ void compuesta() {
 	switch (option) {
 	case 'R':
 
-		points();
-		rotate();
+	    rotate();
 
 		break;
 	case 'S':
 
-		points();
 		scale();
 
 		break;
 	case 'T':
 
-		points();
 		translate();
-
-		break;
-	case 'U':
-
-		menu();
 
 		break;
 	default:
@@ -1282,6 +1222,10 @@ void compuesta() {
 
 void cuaternios() {
 
+	if (idt == 11) {
+		idt = 1;
+	}
+
 	system("cls");
 	cout << "Cuaterniones: " << endl;
 	cout << endl;
@@ -1295,12 +1239,12 @@ void cuaternios() {
 	cin >> z;
 	cout << endl;
 
-	p[0].filas = 3;
-	p[0].columnas = 1;
+	p.filas = 3;
+	p.columnas = 1;
 
-	p[0].in[1][1] = x;
-	p[0].in[2][1] = y;
-	p[0].in[3][1] = z;
+	p.in[1][1] = x;
+	p.in[2][1] = y;
+	p.in[3][1] = z;
 
 	cout << "Vector: " << endl;
 	cout << "Vx: ";
@@ -1327,45 +1271,44 @@ void cuaternios() {
 	vy = vy * sin(theta);
 	vz = vz * sin(theta);
 
-	q[0].filas = 3;
-	q[0].columnas = 3;
+	q.filas = 3;
+	q.columnas = 3;
 
-	q[0].in[1][1] = 1 - (2 * pow(vy, 2)) - (2 * pow(vz, 2));
-	q[0].in[1][2] = (2 * vx * vy) - (2 * s * vz);
-	q[0].in[1][3] = (2 * vx * vz) + (2 * s * vy);
+	q.in[1][1] = 1 - (2 * pow(vy, 2)) - (2 * pow(vz, 2));
+	q.in[1][2] = (2 * vx * vy) - (2 * s * vz);
+	q.in[1][3] = (2 * vx * vz) + (2 * s * vy);
 		  
-	q[0].in[2][1] = (2 * vx * vy) + (2 * s * vz);
-	q[0].in[2][2] = 1 - (2 * vx * vx) - (2 * vz * vz);
-	q[0].in[2][3] = (2 * vy * vz) - (2 * s * vx);
+	q.in[2][1] = (2 * vx * vy) + (2 * s * vz);
+	q.in[2][2] = 1 - (2 * vx * vx) - (2 * vz * vz);
+	q.in[2][3] = (2 * vy * vz) - (2 * s * vx);
 		  
-	q[0].in[3][1] = (2 * vx * vz) - (2 * s * vy);
-	q[0].in[3][2] = (2 * vy * vz) + (2 * s * vx);
-	q[0].in[3][3] = 1 - (2 * pow(vx, 2)) - (2 * pow(vy, 2));
+	q.in[3][1] = (2 * vx * vz) - (2 * s * vy);
+	q.in[3][2] = (2 * vy * vz) + (2 * s * vx);
+	q.in[3][3] = 1 - (2 * pow(vx, 2)) - (2 * pow(vy, 2));
 
 	/*
 	cout << endl;
 	cout << "Matriz Cuaternios:" << endl;
-	for (int j = 1; j <= q[0].filas; j++) {
-	for (int k = 1; k <= q[0].columnas; k++) {
-	cout << "[" << q[0].in[j][k] << "]";
+	for (int j = 1; j <= q.filas; j++) {
+	for (int k = 1; k <= q.columnas; k++) {
+	cout << "[" << q.in[j][k] << "]";
 	}
 	cout << endl;
 	}
 	system("pause>nul");
 	*/
 
-
 	mt[idt].filas = 3;
 	mt[idt].columnas = 1;
 
 	for (int i = 1; i <= mt[idt].filas; i++) {
-		for (int j = 1; j <= p[0].columnas; j++) {
+		for (int j = 1; j <= p.columnas; j++) {
 
 			mt[idt].in[i][j] = 0;
 
-			for (int k = 1; k <= p[0].filas; k++) {
+			for (int k = 1; k <= p.filas; k++) {
 
-				mt[idt].in[i][j] = mt[idt].in[i][j] + q[0].in[i][k] * p[0].in[k][j];
+				mt[idt].in[i][j] = mt[idt].in[i][j] + q.in[i][k] * p.in[k][j];
 
 			}
 		}
@@ -1391,6 +1334,68 @@ void cuaternios() {
 	cout << endl;
 
 	idt++;
+
+	system("pause > nul");
+
+	menu();
+}
+
+void compuesta2() {
+
+	cout << "Realizar otra transformaciòn:" << endl; 
+	cout << "R.Rotar" << endl;
+	cout << "S.Escalar" << endl;
+	cout << "T.Trasladar" << endl;
+	cout << "U.Aplicar Puntos" << endl;
+	cin >> option;
+
+	if (option > 96) {
+		option -= 32;
+	}
+
+	switch (option) {
+	case 'R':
+		rotate();
+		break;
+	case 'S':
+		scale();
+		break;
+	case 'T':
+		translate();
+		break;
+	case 'U':
+		points();
+		break;
+	default:
+		
+		cout << endl;
+		cout << "Ingresa una letra valida." << endl;
+	}
+}
+
+void matricescomp() {
+
+	system("cls");
+	cout << "Matrices Compuestas Registradas: " << endl;
+	cout << endl;
+
+	for (int i = 1; i < idt; i++) {
+
+		cout << "Matriz " << i << ": " << endl;
+
+		for (int j = 1; j <= mt[i].filas; j++) {
+
+			for (int k = 1; k <= mt[i].columnas; k++) {
+
+				cout << "[" << mt[i].in[j][k] << "]";
+			}
+
+			cout << endl;
+		}
+
+		cout << endl;
+
+	}
 
 	system("pause > nul");
 
