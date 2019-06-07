@@ -36,7 +36,6 @@ struct User {
 	char samepassword[1024] = "";
 	char existinguser[1024] = "";
 	User *sig;
-	User *ant;
 }*inicio, *auxiliar;
 
 bool valid = 0;
@@ -83,6 +82,7 @@ bool validsizeprice = 1;
 bool validdate = 1;
 bool validtime = 1;
 bool flag = 1;
+bool changedate = 0;
 
 char imagenvet[1024] = "C:\\Users\\GONZALEZ\\Desktop\\Laboratorios\\P. Avanzada\\Final x2\\MV.bmp";
 char imagenfirma[1024] = "C:\\Users\\GONZALEZ\\Desktop\\Laboratorios\\P. Avanzada\\Final x2\\Firma.bmp";
@@ -109,9 +109,10 @@ char Fechasl[11];
 char FechaL[11];
 char HoraL[9];
 
-int dateid;
+int dateid = 0;
 
-void FillDate();
+void listacitas(HWND hWnd);
+
 void Delete();
 void SaveFile();
 void ReadFile();
@@ -167,9 +168,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 
 	hWnd = CreateDialog(
 		hInst,
-		MAKEINTRESOURCE(IDD_PRINCIPAL),
+		MAKEINTRESOURCE(IDD_LOGIN),
 		NULL,
-		PRINCIPAL
+		LOGIN
 	);
 
 	
@@ -359,6 +360,7 @@ BOOL CALLBACK PRINCIPAL(HWND hWnd,
 			dateid = num +1;
 		}
 
+
 		Image(hWnd, IDC_STATIC5, imagenlogo, 400, 230);
 	
 		hLocaltime = GetDlgItem(hWnd, IDC_STATIC1);
@@ -546,7 +548,6 @@ void NewUser() {
 
 		inicio = new User;
 		inicio->sig = NULL;
-		inicio->ant = NULL;
 		auxiliar = inicio;
 	}
 	else {
@@ -554,7 +555,6 @@ void NewUser() {
 			auxiliar = auxiliar->sig;
 		}
 		auxiliar->sig = new User;
-		auxiliar->sig->ant = auxiliar;
 		auxiliar = auxiliar->sig;
 		auxiliar->sig = NULL;
 	}
@@ -1132,6 +1132,7 @@ BOOL CALLBACK NEWDATE(HWND hWnd,
 
 			if (msgboxID == IDYES)
 			{
+				Delete();
 				EndDialog(hWnd, 0);
 			}
 		}
@@ -1192,6 +1193,8 @@ BOOL CALLBACK NEWDATE(HWND hWnd,
 				break;
 			}
 
+		
+
 			SYSTEMTIME dateSelected, timeSelected;
 			DateTime_GetSystemtime(hTimePicker, &timeSelected);
 			MonthCal_GetCurSel(hDatePicker, &dateSelected);
@@ -1208,24 +1211,25 @@ BOOL CALLBACK NEWDATE(HWND hWnd,
 
 			ValidDateTime();
 
-			if (validdate == 0) {
+				if (validdate == 0) {
 
-				MessageBox(NULL, "Fecha Inválida.Seleccione otra fecha.", "Error", NULL);
-				validdate = 1;
-				*Fechaok = NULL;
-				*Horaok = NULL;
+					MessageBox(NULL, "Fecha Inválida.Seleccione otra fecha.", "Error", NULL);
+					validdate = 1;
+					*Fechaok = NULL;
+					*Horaok = NULL;
 
-				break;
-			}
-			if(validtime == 0) {
+					break;
+				}
+				if (validtime == 0) {
 
-				MessageBox(NULL, "Hora Inválida.Seleccione otra hora.", "Error", NULL);
-				validtime = 1;
-				*Fechaok = NULL;
-				*Horaok = NULL;
+					MessageBox(NULL, "Hora Inválida.Seleccione otra hora.", "Error", NULL);
+					validtime = 1;
+					*Fechaok = NULL;
+					*Horaok = NULL;
 
-				break;
-			}
+					break;
+				}
+		
 		
 			ValidPrice();
 			
@@ -1298,8 +1302,8 @@ void NewDate() {
 		}
 		aux->next = new Date;
 		aux->next->prev = aux;
-		aux->id = dateid++;
 		aux = aux->next;
+		aux->id = dateid++;
 		last = aux;
 
 		aux->next = NULL;
@@ -1392,6 +1396,7 @@ void ConvertirFecha(char*Fecha)
 
 	FechaOri = Day + Month + Year;
 	strcat_s(Fechaok,FechaOri.c_str()); 
+	*aux->dateok = NULL;
 	strcat_s(aux->dateok, FechaOri.c_str());
 	
 }
@@ -1493,6 +1498,8 @@ BOOL CALLBACK AGENDA(HWND hWnd,
 		{
 		case IDC_BUTTON3:
 		{
+			EnableWindow(GetDlgItem(hWnd, IDC_LIST3), FALSE);
+
 			SendDlgItemMessage(hWnd, IDC_LIST3, LB_RESETCONTENT, 0, 0);
 
 			aux = origin;
@@ -1513,7 +1520,7 @@ BOOL CALLBACK AGENDA(HWND hWnd,
 
 					hListCitas = GetDlgItem(hWnd, IDC_LIST3);
 					SendMessage(hListCitas, LB_ADDSTRING, 0, (LPARAM)TEXT(aux->time));
-			
+
 				}
 				aux = aux->next;
 			}
@@ -1522,6 +1529,13 @@ BOOL CALLBACK AGENDA(HWND hWnd,
 			
 		}
 		break;
+		case IDC_BUTTON4:
+		{
+			EnableWindow(GetDlgItem(hWnd, IDC_LIST3), TRUE);
+			listacitas(hWnd);
+
+		}
+			break;
 		case IDC_LIST3:
 		{
 			if (HIWORD(wParam) == LBN_DBLCLK) {
@@ -1540,6 +1554,8 @@ BOOL CALLBACK AGENDA(HWND hWnd,
 						flag = 0;
 						break;
 					}
+
+					
 				}
 
 				if (flag == 1) {
@@ -1663,7 +1679,25 @@ BOOL CALLBACK EDITAR(HWND hWnd,
 			SendMessage(hRadioMacho, BM_SETCHECK, (WPARAM)BST_CHECKED, 1);
 		}
 
+		if (aux->payment[2] == 116) {
 
+			SendMessage(hRadio3m, BM_SETCHECK, (WPARAM)BST_CHECKED, 1);
+		}
+		else if (aux->payment[2] == 115) {
+
+			SendMessage(hRadio6m, BM_SETCHECK, (WPARAM)BST_CHECKED, 1);
+		}
+		else if (aux->payment[2] == 110) {
+
+			SendMessage(hRadio9m, BM_SETCHECK, (WPARAM)BST_CHECKED, 1);
+		}
+		else {
+
+			SendMessage(hRadioSin, BM_SETCHECK, (WPARAM)BST_CHECKED, 1);
+		}
+
+		SetWindowText(hDatePicker, aux->date);
+		SetWindowText(hTimePicker, aux->time);
 
 	}
 	break;
@@ -1725,6 +1759,11 @@ BOOL CALLBACK EDITAR(HWND hWnd,
 		break;
 		case IDC_COMBO1:
 		{
+			HWND motivo = GetDlgItem(hWnd, IDC_EDIT3);
+			SetWindowText(motivo, NULL);
+
+			EnableWindow(GetDlgItem(hWnd, IDC_EDIT3), FALSE);
+
 			if (HIWORD(wParam) == CBN_SELENDOK) {
 
 				SendMessage(hComboEspecie, CB_GETLBTEXT, index, (LPARAM)aux->specie);
@@ -1749,6 +1788,10 @@ BOOL CALLBACK EDITAR(HWND hWnd,
 		break;
 		case IDC_COMBO2:
 		{
+			HWND motivo = GetDlgItem(hWnd, IDC_EDIT6);
+			SetWindowText(motivo, NULL);
+
+			EnableWindow(GetDlgItem(hWnd, IDC_EDIT6), FALSE);
 
 			GetWindowText(hComboMotivo, aux->motivo, 1024);
 
@@ -1833,16 +1876,40 @@ BOOL CALLBACK EDITAR(HWND hWnd,
 
 		}
 		break;
-		case IDCANCEL:
+		case ID_EDIT:
 		{
-			int msgboxID = MessageBox(NULL, "Se perderán todos los cambios no guardados.\n¿Desea continuar?", "Confirmación", MB_ICONEXCLAMATION | MB_YESNO);
+			EnableWindow(GetDlgItem(hWnd, IDC_EDIT2), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_EDIT4), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_EDIT1), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_COMBO1), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_EDIT3), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_COMBO2), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_RADIO1), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_RADIO2), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_RADIO3), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_RADIO4), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_RADIO5), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_RADIO6), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_EDIT6), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_EDIT7), TRUE);
+			
+		}
+			break;
+		case ID_EDIT2:
+		{
+			EnableWindow(GetDlgItem(hWnd, IDC_DATETIMEPICKER1), TRUE);
+			EnableWindow(GetDlgItem(hWnd, IDC_DATETIMEPICKER2), TRUE);
 
-			if (msgboxID == IDYES)
-			{
-				EndDialog(hWnd, 0);
-			}
+			changedate = 1;
+
 		}
 		break;
+		case ID_DELETE:
+		{
+			Delete();
+			EndDialog(hWnd, 0);
+		}
+			break;
 		case IDOK:
 		{
 
@@ -1899,39 +1966,42 @@ BOOL CALLBACK EDITAR(HWND hWnd,
 				break;
 			}
 
-			SYSTEMTIME dateSelected, timeSelected;
-			DateTime_GetSystemtime(hTimePicker, &timeSelected);
-			MonthCal_GetCurSel(hDatePicker, &dateSelected);
+			if (changedate == 1) {
 
-			SendDlgItemMessage(hWnd, IDC_DATETIMEPICKER1, WM_GETTEXT, 1024, (LPARAM)aux->date);
-			SendDlgItemMessage(hWnd, IDC_DATETIMEPICKER2, WM_GETTEXT, 1024, (LPARAM)aux->time);
+				SYSTEMTIME dateSelected, timeSelected;
+				DateTime_GetSystemtime(hTimePicker, &timeSelected);
+				MonthCal_GetCurSel(hDatePicker, &dateSelected);
 
-			ConvertirFecha(aux->date);
-			ConvertirHora(aux->time);
+				SendDlgItemMessage(hWnd, IDC_DATETIMEPICKER1, WM_GETTEXT, 1024, (LPARAM)aux->date);
+				SendDlgItemMessage(hWnd, IDC_DATETIMEPICKER2, WM_GETTEXT, 1024, (LPARAM)aux->time);
 
-			GetLocalTime(&lt);
-			snprintf(FechaL, 11, "%02d%02d%02d", lt.wDay, lt.wMonth, lt.wYear);
-			snprintf(HoraL, 9, "%02d%02d%02d", lt.wHour, lt.wMinute, lt.wSecond);
+				ConvertirFecha(aux->date);
+				ConvertirHora(aux->time);
 
-			ValidDateTime();
+				GetLocalTime(&lt);
+				snprintf(FechaL, 11, "%02d%02d%02d", lt.wDay, lt.wMonth, lt.wYear);
+				snprintf(HoraL, 9, "%02d%02d%02d", lt.wHour, lt.wMinute, lt.wSecond);
 
-			if (validdate == 0) {
+				ValidDateTime();
 
-				MessageBox(NULL, "Fecha Inválida.Seleccione otra fecha.", "Error", NULL);
-				validdate = 1;
-				*Fechaok = NULL;
-				*Horaok = NULL;
+				if (validdate == 0) {
 
-				break;
-			}
-			if (validtime == 0) {
+					MessageBox(NULL, "Fecha Inválida.Seleccione otra fecha.", "Error", NULL);
+					validdate = 1;
+					*Fechaok = NULL;
+					*Horaok = NULL;
 
-				MessageBox(NULL, "Hora Inválida.Seleccione otra hora.", "Error", NULL);
-				validtime = 1;
-				*Fechaok = NULL;
-				*Horaok = NULL;
+					break;
+				}
+				if (validtime == 0) {
 
-				break;
+					MessageBox(NULL, "Hora Inválida.Seleccione otra hora.", "Error", NULL);
+					validtime = 1;
+					*Fechaok = NULL;
+					*Horaok = NULL;
+
+					break;
+				}
 			}
 
 			ValidPrice();
@@ -1964,8 +2034,6 @@ BOOL CALLBACK EDITAR(HWND hWnd,
 
 				*Fechaok = NULL;
 				*Horaok = NULL;
-
-				EndDialog(hWnd, 0);
 			}
 
 		}
@@ -2089,6 +2157,23 @@ void ReadFile() {
 	else
 	{
 		printf("El archivo no se pudo abrir.");
+	}
+}
+
+void listacitas(HWND hWnd) {
+	aux = origin;
+	int actual = 0;
+	SendDlgItemMessage(hWnd, IDC_LIST3, LB_RESETCONTENT, 0, 0);
+
+	if (aux != NULL)
+	{
+		while (aux != NULL)
+		{
+			SendDlgItemMessage(hWnd, IDC_LIST3, LB_ADDSTRING, 0,(LPARAM)aux->date);
+			SendDlgItemMessage(hWnd, IDC_LIST3, LB_SETITEMDATA, (WPARAM)actual, aux->id);
+			actual++;
+			aux = aux->next;
+		}
 	}
 }
 

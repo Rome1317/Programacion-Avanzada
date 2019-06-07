@@ -8,6 +8,7 @@ void registrar();
 void matrices();
 void operaciones();
 void matricescomp();
+void mxv();
 
 void buscar();
 void suma(int, int);
@@ -149,10 +150,11 @@ void menu() {
 	cout << "A. Registrar Matrices " << endl;
 	cout << "B. Matrices Registradas" << endl;
 	cout << "C. Operaciones" << endl;
-	cout << "D. Matriz Compuesta" << endl;
-	cout << "E. Cuaterniones" << endl;
-	cout << "F. Matrices Compuestas Registradas" << endl;
-	cout << "G. Salir del Menu" << endl;
+	cout << "D. Matriz x Vector" << endl;
+	cout << "E. Matriz Compuesta" << endl;
+	cout << "F. Cuaterniones" << endl;
+	cout << "G. Matrices Compuestas Registradas" << endl;
+	cout << "H. Salir del Menu" << endl;
 	cin >> option;
 
 	if (option > 96) {
@@ -178,20 +180,25 @@ void menu() {
 		break;
 	case 'D':
 
-		compuesta();
+		mxv();
 
 		break;
 	case 'E':
 
-		cuaternios();
+		compuesta();
 
 		break;
 	case 'F':
 
-		matricescomp();
+		cuaternios();
 
 		break;
 	case 'G':
+
+		matricescomp();
+
+		break;
+	case 'H':
 
 		system("cls");
 		cout << "Ha salido del programa." << endl;
@@ -1400,4 +1407,79 @@ void matricescomp() {
 	system("pause > nul");
 
 	menu();
+}
+
+void mxv() {
+
+	system("cls");
+	cout << "Matriz por Vector: " << endl;
+	cout << endl;
+
+	m[id].idmat = idmat;
+
+	if (m[id].idmat > 90) {
+		id = 1;
+		m[id].idmat = 65;
+	}
+
+	cout << "Matriz:" << endl;
+
+	e.filas = 1;
+	e.columnas = 3;
+
+	for (int j = 1; j <= e.filas; j++) {
+
+		for (int k = 1; k <= e.columnas; k++) {
+
+			cout << "Ingrese el número[" << j << "][" << k << "]: ";
+			cin >> e.in[j][k];
+		}
+
+	}
+
+	p.filas = 3;
+	p.columnas = 1;
+
+	cout << endl;
+	cout << "Vector:" << endl;
+	cout << "x: ";
+	cin >> x;
+	cout << "y: ";
+	cin >> y;
+	cout << "z: ";
+	cin >> z;
+
+	p.in[1][1] = x;
+	p.in[2][1] = y;
+	p.in[3][1] = z;
+
+	m[id].filas = e.filas;
+	m[id].columnas = p.columnas;
+
+	for (int i = 1; i <= m[id].filas; i++) {
+		for (int j = 1; j <= m[id].columnas; j++) {
+
+			m[id].in[i][j] = 0;
+
+			for (int k = 1; k <= p.filas; k++) {
+
+				m[id].in[i][j] = m[id].in[i][j] + e.in[i][k] * p.in[k][j];
+
+			}
+		}
+	}
+
+	cout << endl;
+	cout << "Matriz Resultante: " << endl;
+	cout << "[" << m[id].in[1][1] << "]" << endl;
+
+	cout << endl;
+	cout << "Matriz registrada como: " << m[id].idmat;
+
+	id++;
+	idmat++;
+
+	system("pause > nul ");
+	menu();
+
 }

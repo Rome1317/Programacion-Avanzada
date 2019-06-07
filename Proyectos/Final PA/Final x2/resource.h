@@ -4,8 +4,6 @@
 //
 #define SEARCH                          2
 #define IDEDIT                          3
-#define IDCANCEL2                       3
-#define IDCANCEL3                       4
 #define IDD_INFO                        101
 #define IDD_NEWDATE                     103
 #define IDD_AGENDA                      105
@@ -48,6 +46,7 @@
 #define IDC_BUTTON3                     1026
 #define IDC_RADIO5                      1026
 #define IDC_RADIO6                      1027
+#define IDC_BUTTON4                     1027
 #define IDC_STATIC14                    1029
 #define IDC_DATETIMEPICKER2             1030
 #define IDC_STATIC15                    1031
@@ -61,7 +60,10 @@
 #define IDC_STATIC_IMAGE2               1038
 #define IDC_STATIC_FIRMA                1039
 #define IDC_STATIC20                    1040
+#define ID_EDIT                         1041
 #define IDC_STATIC21                    1042
+#define ID_DELETE                       1043
+#define ID_EDIT2                        1045
 #define ID_AGENDA_VER                   40011
 #define ID_CITA_NUEVA                   40012
 #define ID_CITA_EDITAR                  40013
@@ -80,7 +82,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        134
 #define _APS_NEXT_COMMAND_VALUE         40022
-#define _APS_NEXT_CONTROL_VALUE         1040
+#define _APS_NEXT_CONTROL_VALUE         1044
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
