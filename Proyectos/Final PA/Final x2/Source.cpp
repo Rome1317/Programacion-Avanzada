@@ -84,9 +84,9 @@ bool validtime = 1;
 bool flag = 1;
 bool changedate = 0;
 
-char imagenvet[1024] = "C:\\Users\\GONZALEZ\\Desktop\\Laboratorios\\P. Avanzada\\Final x2\\MV.bmp";
-char imagenfirma[1024] = "C:\\Users\\GONZALEZ\\Desktop\\Laboratorios\\P. Avanzada\\Final x2\\Firma.bmp";
-char imagenlogo[1024] = "C:\\Users\\GONZALEZ\\Desktop\\Laboratorios\\P. Avanzada\\Final x2\\Patasycolas.bmp";
+char imagenvet[1024] = "C:\\Users\\GONZALEZ\\Desktop\\P-Avanzada\\Proyectos\\Final PA\\MV.bmp";
+char imagenfirma[1024] = "C:\\Users\\GONZALEZ\\Desktop\\P-Avanzada\\Proyectos\\Final PA\\Firma.bmp";
+char imagenlogo[1024] = "C:\\Users\\GONZALEZ\\Desktop\\P-Avanzada\\Proyectos\\Final PA\\Patasycolas.bmp";
 
 void Image(HWND hWnd, WPARAM wParam, char *imagen, int m, int n);
 
